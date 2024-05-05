@@ -1,17 +1,7 @@
-<h1>
-    Hello from index blade
-</h1>
+@extends('layouts.app')
 
-{{-- <div>
-    @if(count($tasks))
-        @foreach ($tasks as $task)
-            <div>{{ $task->title }}</div>
-        @endforeach
-    @else
-        <div>There are NO tasks.</div>
-    @endif
-</div> --}}
-
+@section('title', 'The List of Tasks')
+@section('content')
 <div>
     @forelse( $tasks as $task)
         <div>
@@ -19,8 +9,8 @@
                 {{ $task->title }}
             </a>
         </div>
-        <div>{{ $task ->title }}</div>
     @empty
         <div>There are NO tasks.</div>
     @endforelse
 </div>
+@endsection
