@@ -56,7 +56,7 @@ $tasks = [
   ),
 ];
 
-Route::get('/', function () {
+Route::get('/wlecome', function () {
     return view('welcome');
 });
 
@@ -65,3 +65,14 @@ Route::get('/hello', function () {
         'name' => 'Arin'
     ]);
 });
+
+// MARKME: Route for tasks
+Route::get('/', function () use ($tasks) {
+  return view('index', [
+    'tasks' => $tasks
+  ]);
+})->name('tasks.index');
+
+Route::get('/{id}', function ($id) {
+  return 'One single task';
+})-> name('tasks.show');
