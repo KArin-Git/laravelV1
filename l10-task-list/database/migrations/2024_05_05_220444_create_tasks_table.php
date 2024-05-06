@@ -11,8 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // create tasks table which connected to task model (app/Models/Task.php)
         Schema::create('tasks', function (Blueprint $table) {
+            // id() sets up an auto-incrementing UNSIGNED BIGINT (primary key) >> seeing git for Blueprint.php
             $table->id();
+            $table->string('title');
+            $table->text('description');
+            $table->text('long_description')->nullable();
+            $table->boolean('complete')->default(false);
             $table->timestamps();
         });
     }
