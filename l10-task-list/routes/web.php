@@ -23,12 +23,19 @@ Route::get('/', function () {
 
 Route::get('/tasks', function () {
   return view('index', ['tasks' => Task::latest()
-    ->where('complete', true)
+    // ->where('complete', true)
     ->get()]);
 })->name('tasks.index');
 
 // form view
-Route::view('/tasks/create', 'create');
+Route::view('/tasks/create', 'create')
+  ->name('tasks.create');
+
+Route::get('/tasks/{id}/edit', function ($id) {
+  return view('edit', [
+    'task' => Task::findOrFail($id)
+  ]);
+})->name('tasks.edit');
 
 Route::get('/tasks/{id}', function ($id) {
   return view('show', [
@@ -48,5 +55,22 @@ Route::post('/tasks', function (Request $request) {
   $task->description = $data['description'];
   $task->long_description = $data['long_description'];
   $task->save();
-  return redirect()->route('tasks.show', ['id' => $task->id]);
+  return redirect()->route('tasks.show', ['id' => $task->id])
+    // add session called success to create a flash msg -> will be display only once app.blade.php
+    ->with('success', 'Task created successfully!');
 })->name('tasks.store');
+
+Route::put('/tasks/{id}', function ($id, Request $request) {
+  $data = $request->validate([
+    'title' => 'required|max:255',
+    'description' => 'required',
+    'long_description' => 'required'
+  ]);
+  $task = Task::findOrFail($id);
+  $task->title = $data['title'];
+  $task->description = $data['description'];
+  $task->long_description = $data['long_description'];
+  $task->save();
+  return redirect()->route('tasks.show', ['id' => $task->id])
+    ->with('success', 'Task updated successfully!');
+})->name('tasks.update');
