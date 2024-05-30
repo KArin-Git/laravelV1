@@ -27,7 +27,7 @@ Route::get('/tasks', function () {
     // ->where('complete', true)
     // ->get()]);
     // add pagination
-    ->paginate()]);
+    ->paginate(10)]);
 })->name('tasks.index');
 
 // form view
