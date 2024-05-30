@@ -8,9 +8,20 @@
     @endif
     <p>{{ $task->created_at }}</p>
     <p>{{ $task->updated_at }}</p>
-
+    <p>{{ $task->complete ? 'Completed' : 'Not Completed' }}</p>
     <div>
-        <form action="{{ route('tasks.destroy', ['task' => $task->id]) }}" method="POST">
+        {{-- no need to specific $task->id as laravel known that it should select with prime key --}}
+        <a href="{{ route('tasks.edit', ['task' => $task]) }}">Edit</a>
+    </div>
+    <div>
+        <form method="post" action="{{ route('tasks.toggle-complete', ['task' => $task]) }}">
+            @csrf
+            @method('put')
+            <button type="submit">Mark as {{ $task->complete ? 'not completed' : 'completed' }}</button>
+        </form>
+    </div>
+    <div>
+        <form action="{{ route('tasks.destroy', ['task' => $task]) }}" method="POST">
             @csrf
             @method('delete')
             <button type="submit">delete</button>

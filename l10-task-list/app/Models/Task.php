@@ -13,6 +13,12 @@ class Task extends Model
         'description',
         'long_description'
     ];
+
+    public function toggleComplete()
+    {
+        $this->complete = !$this->complete;
+        $this->save();
+    }
     // protected $guarded = [ 'secret' ];
 
     // public function getRouteKeyName() {
