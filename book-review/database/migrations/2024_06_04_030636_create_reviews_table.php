@@ -19,7 +19,7 @@ return new class extends Migration
             $table->text('review');
             $table->unsignedTinyInteger('rating');
             $table->timestamps();
-            // add foreign key constraint
+            // add foreign key constraint >> allow us to change ref by other column not limited to id
             $table->foreign('book_id')->references('id')
                 ->on('books')->onDelete('cascade');
         });

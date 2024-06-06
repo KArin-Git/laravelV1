@@ -12,5 +12,7 @@ class Review extends Model
     public function book()
     {
         return $this->belongsTo(Book::class);
+        // default column setup from Laravel >> class_id
+        // return $this->belongsTO(Book::class, 'book_id', 'id');
     }
 }
