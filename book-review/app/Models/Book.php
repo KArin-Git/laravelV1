@@ -40,6 +40,9 @@ class Book extends Model
             ->orderBy('reviews_avg_rating', 'desc');
     }
 
+    public function scopeMinReviews(Builder $query, $minReviews): Builder {
+        return $query->having('reviews_count', '>=', $minReviews);
+    }
     // no need for return statement because it's pass by reference Builder $query >> dateRangeFilter($q ... )
     private function dateRangeFilter(Builder $query, $from = null, $to = null) {
         if ($from && !$to) {
