@@ -8,15 +8,15 @@
                 <div class="book-item">
                     <div class="flex flex-wrap items-center justify-between">
                         <div class="w-full flex-grow sm:w-auto">
-                            <a href="#" class="book-title">Book Title</a>
-                            <span class="book-author">by Piotr Jura</span>
+                            <a href="{{ route('book.show', $book) }}" class="book-title">{{ $book->title }}</a>
+                            <span class="book-author">{{ $book->author }}</span>
                         </div>
                         <div>
                             <div class="book-rating">
-                                3.5
+                                {{ number_format($book->reviews_avg_rating, 1) }}
                             </div>
                             <div class="book-review-count">
-                                out of 5 reviews
+                                out of {{ $book->reviews_count }} {{ Str::plural('review', $book->reviews_count) }}
                             </div>
                         </div>
                     </div>
@@ -26,7 +26,7 @@
             <li class="mb-4">
                 <div class="empty-book-item">
                     <p class="empty-text">No books found</p>
-                    <a href="#" class="reset-link">Reset criteria</a>
+                    <a href="{{ route('book.index') }}" class="reset-link">Reset criteria</a>
                 </div>
             </li>
         @endforelse
