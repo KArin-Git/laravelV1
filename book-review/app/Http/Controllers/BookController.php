@@ -3,15 +3,23 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Book;
 
 class BookController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $title = $request->input('title');
+        // when >> if $title is not null then the func() will be called, else do nothing
+        $book = Book::when(
+            $title,
+            fn ($query, $title) => $query->title($title)
+        )->get();
+        // ['books' => $book] same as compact('book') >> find a variable with the name books and turn it into an array
+        return view('books.index', ['books' => $book]);
     }
 
     /**
