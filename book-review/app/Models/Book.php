@@ -27,7 +27,7 @@ class Book extends Model
     {
         // fn is a shorthand for PHP 7.4 closure (function) **only 1 expression
         return $query->withCount([
-            'reviews' => fn(Builder $q) => $this->dateRangeFilter($q, $from, $to)
+            'reviews' => fn (Builder $q) => $this->dateRangeFilter($q, $from, $to)
         ])
             ->orderBy('reviews_count', 'desc');
     }
@@ -35,23 +35,51 @@ class Book extends Model
     public function scopeHighestRated(Builder $query, $from = null, $to = null): Builder
     {
         return $query->withAvg([
-            'reviews' => fn(Builder $q) => $this->dateRangeFilter($q, $from, $to)
+            'reviews' => fn (Builder $q) => $this->dateRangeFilter($q, $from, $to)
         ], 'rating')
             ->orderBy('reviews_avg_rating', 'desc');
     }
 
-    public function scopeMinReviews(Builder $query, $minReviews): Builder {
+    public function scopeMinReviews(Builder $query, $minReviews): Builder
+    {
         return $query->having('reviews_count', '>=', $minReviews);
     }
+
+    public function scopePopularLastMonth(Builder $query): Builder
+    {
+        return $query->popular(now()->subMonth(), now())
+            ->highestRated(now()->subMonth(), now())
+            ->minReviews(2);
+    }
+
+    public function scopePopularLast6Months(Builder $query): Builder
+    {
+        return $query->popular(now()->subMonth(6), now())
+            ->highestRated(now()->subMonth(6), now())
+            ->minReviews(5);
+    }
+
+    public function scopeHighestRatedLastMonth(Builder $query): Builder
+    {
+        return $query->highestRated(now()->subMonth(), now())
+            ->popular(now()->subMonth(), now())
+            ->minReviews(2);
+    }
+
+    public function scopeHighestRatedLast6Months(Builder $query): Builder
+    {
+        return $query->highestRated(now()->subMonth(6), now())
+            ->popular(now()->subMonth(6), now())
+            ->minReviews(5);
+    }
     // no need for return statement because it's pass by reference Builder $query >> dateRangeFilter($q ... )
-    private function dateRangeFilter(Builder $query, $from = null, $to = null) {
+    private function dateRangeFilter(Builder $query, $from = null, $to = null)
+    {
         if ($from && !$to) {
             $query->where('created_at', '=>', $from);
-        }
-        elseif (!$from && $to) {
+        } elseif (!$from && $to) {
             $query->where('created_at', '<=', $to);
-        }
-        elseif ($from && $to) {
+        } elseif ($from && $to) {
             $query->whereBetween('created_at', [$from, $to]);
         }
     }
