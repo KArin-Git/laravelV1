@@ -1,7 +1,12 @@
 @extends('layouts.app')
 @section('content')
     <h1 class="mb-10 text-2x1">Books</h1>
-    <form action=""></form>
+    <form method="GET" action="{{ route('book.index') }}" class="mb-4 flex items-center space-x-2">
+        <input type="text" name="title" id="title" value="{{ request('title') }}" class="input h-10"
+            placeholder="Search by Title">
+        <button type="submit" class="btn h-10">Search</button>
+        <a href="{{ route('book.index') }}" class="btn h-10">Clear</a>
+    </form>
     <ul>
         @forelse ($books as $book)
             <li class="mb-4">
