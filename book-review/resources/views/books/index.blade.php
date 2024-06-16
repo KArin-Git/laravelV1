@@ -1,12 +1,31 @@
 @extends('layouts.app')
 @section('content')
     <h1 class="mb-10 text-2x1">Books</h1>
+    {{-- Section: Search by Title --}}
     <form method="GET" action="{{ route('book.index') }}" class="mb-4 flex items-center space-x-2">
-        <input type="text" name="title" id="title" value="{{ request('title') }}" class="input h-10"
-            placeholder="Search by Title">
+        <input type="text" name="title" value="{{ request('title') }}" class="input h-10" placeholder="Search by Title">
+        <input type="hidden" name="filter" value="{{ request('filter') }}">
         <button type="submit" class="btn h-10">Search</button>
         <a href="{{ route('book.index') }}" class="btn h-10">Clear</a>
     </form>
+    {{-- Section: Filter by Rating --}}
+    <div class="filter-container mb-4 flex">
+        @php
+            $filters = [
+                '' => 'Latest',
+                'popular_last_month' => 'Popular Last Month',
+                'popular_last_6month' => 'Popular Last 6 Months',
+                'highest_rated_last_month' => 'Highest rated Last Month',
+                'highest_rated_last_6month' => 'Highest rated Last 6 Months',
+            ];
+        @endphp
+        @foreach ($filters as $key => $label)
+            <a href="{{ route('book.index', [...request()->query(), 'filter' => $key]) }}"
+                class="{{ request('filter') === $key || (request('filter') === null && $key === '') ? 'filter-item-active' : 'filter-item' }}">
+                {{ $label }}
+            </a>
+        @endforeach
+    </div>
     <ul>
         @forelse ($books as $book)
             <li class="mb-4">
