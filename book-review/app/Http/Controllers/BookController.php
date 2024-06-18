@@ -28,7 +28,7 @@ class BookController extends Controller
             default => $books->latest(),
         };
         $books = $books->get();
-        // ['books' => $book] same as compact('book') >> find a variable with the name books and turn it into an array
+        // ['books' => $books] same as compact('books') >> find a variable with the name books and turn it into an array
         return view('books.index', ['books' => $books]);
     }
 
