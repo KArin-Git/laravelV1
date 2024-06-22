@@ -63,7 +63,16 @@ class BookController extends Controller
      */
     public function show(Book $book)
     {
-        return view('books.show', ['book' => $book]);
+        // when we get inside this method the $book is already loaded from DB
+        return view(
+            'books.show',
+            [
+                'book' => $book->load([
+                    // all the 'reviews' that we see will be sort by latest and take only 3 reviews
+                    'reviews' => fn($query) => $query->latest()->take(3),
+                ])
+            ]
+        );
     }
 
     /**
