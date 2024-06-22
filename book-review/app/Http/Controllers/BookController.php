@@ -13,6 +13,7 @@ class BookController extends Controller
     public function index(Request $request)
     {
         $title = $request->input('title');
+        // input('filter', '') >> if filter is not set then it will be empty
         $filter = $request->input('filter', '');
         
         // when >> if $title is not null then the func() will be called, else do nothing
@@ -25,6 +26,8 @@ class BookController extends Controller
             fn ($query, $title) => $query->title($title)
         );
 
+        // match() statement is a shorthand for switch statement
+        // the result of the match statement will be assigned to $books
         $books = match ($filter) {
             'popular_last_month' => $books->popularLastMonth(),
             'popular_last_6month' => $books->popularLast6Months(),
@@ -34,6 +37,7 @@ class BookController extends Controller
         };
 
         $books = $books->get();
+
         // ['books' => $books] same as compact('books') >> find a variable with the name books and turn it into an array
         return view('books.index', ['books' => $books]);
     }
