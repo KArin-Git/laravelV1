@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Book;
+use Illuminate\Support\Facades\Cache;
 
 class BookController extends Controller
 {
@@ -37,6 +38,9 @@ class BookController extends Controller
         };
 
         $books = $books->get();
+
+        // Cache::remember('key', how long we wanna store this data, fn() closer/lambda that will be executed if the data is not in the cache);
+        Cache::remember('books', 3600, fn() => $books->get());
 
         // ['books' => $books] same as compact('books') >> find a variable with the name books and turn it into an array
         return view('books.index', ['books' => $books]);
