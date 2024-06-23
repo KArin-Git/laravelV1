@@ -41,7 +41,7 @@ class BookController extends Controller
         // 'books' key doesn't reflect the parameters ($title, $filter)
         // BE CAREFUL with sensitive data in cache, it will show in the diff users
         $cacheKey = 'books:' . $filter . ':' . $title;
-        $books = cache()->remember($cacheKey, 3600, fn() => $books);
+        $books = cache()->remember($cacheKey, 3600, fn() => $books->get());
         
         // ['books' => $books] same as compact('books') >> find a variable with the name books and turn it into an array
         return view('books.index', ['books' => $books]);
@@ -75,7 +75,7 @@ class BookController extends Controller
             3600,
             fn() => Book::with([
             // all the 'reviews' that we see will be sort by latest and take only 3 reviews
-            'reviews' => fn($query) => $query->latest()->take(3)
+            'reviews' => fn($query) => $query->latest()
             ])->withAvgRating()->withReviewsCount()->findOrFail($id)
         );
 
