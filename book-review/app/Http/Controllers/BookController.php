@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Book;
-use Illuminate\Support\Facades\Cache;
 
 class BookController extends Controller
 {
@@ -40,8 +39,13 @@ class BookController extends Controller
         $books = $books->get();
 
         // Cache::remember('key', how long we wanna store this data, fn() closer/lambda that will be executed if the data is not in the cache);
-        Cache::remember('books', 3600, fn() => $books->get());
-
+        // Cache::remember('books', 3600, fn() => $books->get());
+        
+        // 'books' key doesn't reflect the parameters ($title, $filter)
+        // BE CAREFUL with sensitive data in cache, it will show in the diff users
+        $cacheKey = 'books:' . $filter . ':' . $title;
+        $books = cache()->remember($cacheKey, 3600, fn() => $books);
+        
         // ['books' => $books] same as compact('books') >> find a variable with the name books and turn it into an array
         return view('books.index', ['books' => $books]);
     }
