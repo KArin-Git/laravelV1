@@ -71,16 +71,16 @@ class BookController extends Controller
      */
     public function show(Book $book)
     {
+        // FIXME: when we change the review, the cache will not be updated (cmd R to refresh the page and the review_rating will not be updated)
+        $cacheKey ='book:' . $book->id;
+
+        $book = cache()->remember($cacheKey, 3600, fn() => $book->load([
+            // all the 'reviews' that we see will be sort by latest and take only 3 reviews
+            'reviews' => fn($query) => $query->latest()->take(3)
+        ]));
+
         // when we get inside this method the $book is already loaded from DB
-        return view(
-            'books.show',
-            [
-                'book' => $book->load([
-                    // all the 'reviews' that we see will be sort by latest and take only 3 reviews
-                    'reviews' => fn($query) => $query->latest()->take(3),
-                ])
-            ]
-        );
+        return view('books.show', ['book' => $book]);
     }
 
     /**
