@@ -33,11 +33,8 @@ class BookController extends Controller
             'popular_last_6month' => $books->popularLast6Months(),
             'highest_rated_last_month' => $books->highestRatedLastMonth(),
             'highest_rated_last_6month' => $books->highestRatedLast6Months(),
-            default => $books->latest(),
+            default => $books->latest()->withAvgRating()->withReviewsCount()
         };
-
-        $books = $books->get();
-
         // Cache::remember('key', how long we wanna store this data, fn() closer/lambda that will be executed if the data is not in the cache);
         // Cache::remember('books', 3600, fn() => $books->get());
         
@@ -69,15 +66,18 @@ class BookController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Book $book)
+    public function show(int $id)
     {
-        // FIXME: when we change the review, the cache will not be updated (cmd R to refresh the page and the review_rating will not be updated)
-        $cacheKey ='book:' . $book->id;
+        $cacheKey ='book:' . $id;
 
-        $book = cache()->remember($cacheKey, 3600, fn() => $book->load([
+        $book = cache()->remember(
+            $cacheKey,
+            3600,
+            fn() => Book::with([
             // all the 'reviews' that we see will be sort by latest and take only 3 reviews
             'reviews' => fn($query) => $query->latest()->take(3)
-        ]));
+            ])->withAvgRating()->withReviewsCount()->findOrFail($id)
+        );
 
         // when we get inside this method the $book is already loaded from DB
         return view('books.show', ['book' => $book]);
