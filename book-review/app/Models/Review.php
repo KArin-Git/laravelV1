@@ -23,6 +23,7 @@ class Review extends Model
         // **this happen to the model. It CANT be done directly inside db
         static::updated(fn (Review $review) => cache()->forget('book:' . $review->book_id));
         static::deleted(fn (Review $review) => cache()->forget('book:' . $review->book_id));
+        static::created(fn (Review $review) => cache()->forget('book:' . $review->book_id));
         
         // MARKME: this handler is not be called in every situation.
         // if we use mass assignment which means we update multiple rows at once, then this handler will not be called >> $review->book_id
