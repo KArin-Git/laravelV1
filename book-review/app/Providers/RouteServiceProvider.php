@@ -46,6 +46,7 @@ class RouteServiceProvider extends ServiceProvider
         });
 
         RateLimiter::for ('reviews', function (Request $request) {
+            // Limit the number of reviews (max:3) a user can submit per hour
             return Limit::perHour(3)->by($request->user()?->id ?: $request->ip());
         });
     }

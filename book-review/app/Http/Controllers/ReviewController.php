@@ -7,6 +7,10 @@ use App\Models\Book;
 
 class ReviewController extends Controller
 {
+    public function __construct() {
+        // middleware:throttle, group:reviews >> only 3 reviews per hour NOT related to book
+        $this->middleware('throttle:reviews')->only(['store']);
+    }
     /**
      * Display a listing of the resource.
      */
